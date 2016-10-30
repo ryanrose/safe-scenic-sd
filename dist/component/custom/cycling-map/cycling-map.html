@@ -1,0 +1,66 @@
+﻿<link rel="import" href="/dist/component/polymer/polymer.html">
+<link rel="import" href="/dist/component/google/google-map.html">
+<link rel="import" href="/dist/component/google/google-map-marker.html">
+<link rel="import" href="/dist/component/google/google-map-poly.html">
+<link rel="import" href="/dist/component/google/google-map-directions.html">
+<link rel="import" href="/dist/component/google/google-map-poly.html">
+
+<dom-module id="cycling-map">
+    <template>
+        <style>
+            .bike-list-marker {
+                cursor: pointer;
+            }
+
+                .bike-list-marker:hover {
+                    box-shadow: rgba(0, 0, 0, 0.3) 0 2px 2px 0;
+                    -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 2px 2px 0;
+                    -moz-box-shadow: rgba(0, 0, 0, 0.3) 0 2px 2px 0;
+                }
+        </style>
+        <div class="row custom-map-container">
+            <div id="divCyclingMap" class="col-lg-9">
+                <google-map api-key="AIzaSyAYewVl33AGSCMPXE7LviN7gEe_MvbOp4c" class="jumbotron">
+                    <google-map-marker longitude="{{longitude}}" latitude="{{latitude}}">
+                        <p>You are here</p>
+                    </google-map-marker>
+                    <template is="dom-repeat" items="{{routes}}">
+                        <google-map-marker id="marker{{item.Id}}" latitude="{{item.Lat}}" longitude="{{item.Lng}}" icon="/images/ic_directions_bike_black_24px.svg">
+                            <p>{{item.Address}}</p>
+                            <p><strong>{{item.Length}}m</strong></p>
+                        </google-map-marker>
+                        <google-map-poly>
+                            <template is="dom-repeat" items="{{item.RouteLocations}}">
+                                <google-map-point latitude='{{item.Lat}}' longitude='{{item.Lng}}'></google-map-point>
+                            </template>
+                        </google-map-poly>
+                    </template>
+                </google-map>
+            </div>
+            <div id="divCyclingList" class="col-lg-3 custom-list-items">
+                <h1 id="listTitle"></h1>
+                <div id="listItems" class="list-group">
+                    <template is="dom-repeat" items="{{routes}}">
+                        <div class="list-group-item">
+                            <div class="row-action-primary">
+                                <i class="material-icons bike-list-marker" on-tap="openMapMarker">directions_bike</i>
+                            </div>
+                            <div class="row-content">
+                                <div class="least-content">{{item.Length}}m<i class="material-icons bike-list-marker" on-tap="toggleRouteGroup">playlist_add</i></div>
+                                <div>
+                                    <h2 class="list-group-item-heading">{{item.Address}}</h2>
+                                    <p class="list-group-item-text">{{item.Juri}}</p>
+                                    <div id="participants{{item.Id}}">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="list-group-separator"></div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script src="cycling-map.js"></script>
+</dom-module>
