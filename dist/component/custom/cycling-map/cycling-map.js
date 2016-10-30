@@ -1,5 +1,4 @@
 ﻿var server = 'https://sandiego.azurewebsites.net';
-server = '/api';
 
 Polymer({
     is: 'cycling-map',
@@ -20,7 +19,7 @@ Polymer({
         },
         apiURL: {
             type: String,
-            value: server + "/routes/getClosestRoutes.json",
+            value: server + "/routes/getClosestRoutes",
             reflectToAttribute: true,
         },
         apiAddParticipantsURL: {
@@ -34,17 +33,17 @@ Polymer({
             reflectToAttribute: true,
         }
     },
-    ready: function () {
+    ready: function() {
         this.routes = [];
         this.autoDiscover();
     },
-    _coordinateUpdated: function () {
+    _coordinateUpdated: function() {
         if (this.longitude && this.latitude) {
             this.setMapCenter();
         }
 
     },
-    setMapCenter: function () {
+    setMapCenter: function() {
         if (this.longitude && this.latitude) {
             var map = document.querySelector("google-map");
             map.longitude = this.longitude;
@@ -52,16 +51,16 @@ Polymer({
             this.updateRoutes();
         }
     },
-    updateRoutes: function () {
+    updateRoutes: function() {
         var _this = this;
         if (this.longitude && this.latitude) {
             var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function () {
+            xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     var response = JSON.parse(xhr.responseText);
                     _this.routes = response;
                     _this.checkRouteDisplay();
-                    
+
                 }
             }
             xhr.open('GET', this.apiURL + '?lat=' + this.latitude + '&lng=' + this.longitude);
@@ -77,7 +76,7 @@ Polymer({
 
             var _this = this;
 
-            navigator.geolocation.getCurrentPosition(function (position) {
+            navigator.geolocation.getCurrentPosition(function(position) {
                 _this.latitude = position.coords.latitude;
                 _this.longitude = position.coords.longitude;
             });
@@ -88,40 +87,39 @@ Polymer({
         if (currentClass.indexOf(className) < 0)
             element.className += " " + className;
     },
-    removeClass: function (className, element) {
+    removeClass: function(className, element) {
         var currentClass = element.className;
         if (currentClass.indexOf(className) >= 0) {
             var allClassInstances = new RegExp(className, 'g');
             element.className = element.className.replace(allClassInstances, className);
         }
-           
+
     },
-    checkRouteDisplay: function () {
+    checkRouteDisplay: function() {
         if (this.routes && this.routes.length > 0) {
             this.$.listTitle.innerHTML = "Bike Routes";
         }
     },
-    openMapMarker: function (e) {
+    openMapMarker: function(e) {
         var markerId = e.model.item.Id;
         var marker = document.querySelector("#marker" + markerId);
         marker.open = !marker.open;
     },
-    toggleRouteGroup: function (e) {
+    toggleRouteGroup: function(e) {
         var icon = e.target;
         var markerId = e.model.item.Id;
         var apiUrl = "";
         if (icon.innerHTML == "close") {
             icon.innerHTML = "playlist_add";
             apiUrl = this.apiRemoveParticipantsURL;
-        } else
-        {
+        } else {
             icon.innerHTML = "close";
             apiUrl = this.apiAddParticipantsURL;
         }
 
         apiUrl += "?routeId=" + markerId;
         var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function () {
+        xhr.onreadystatechange = function() {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 console.log("call executed");
             }
